@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -71,21 +71,24 @@ export default function Home() {
       } else {
         setFallbackImage(null);
       }
-    } catch (e: any) {
-      setError(e.message || "Unknown error");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      setError(message);
     } finally {
       setLoading(false);
     }
   }
 
   // Normalize potentially non-array fields coming from the model
-  const wsNotes = Array.isArray((plan as any)?.writingStyleNotes)
-    ? ((plan as any).writingStyleNotes as string[])
-    : (plan as any)?.writingStyleNotes
-    ? [String((plan as any).writingStyleNotes)]
+  const rawWsNotes = plan ? (plan as unknown as { writingStyleNotes?: unknown }).writingStyleNotes : undefined;
+  const wsNotes = Array.isArray(rawWsNotes)
+    ? rawWsNotes as string[]
+    : rawWsNotes
+    ? [String(rawWsNotes)]
     : [];
-  const leftImgs = Array.isArray((plan as any)?.leftPaneImages)
-    ? ((plan as any).leftPaneImages as { title: string; caption: string; suggestedSearchQuery: string; referenceDiagramDescription?: string }[])
+  const rawLeftImgs = plan ? (plan as unknown as { leftPaneImages?: unknown }).leftPaneImages : undefined;
+  const leftImgs = Array.isArray(rawLeftImgs)
+    ? rawLeftImgs as { title: string; caption: string; suggestedSearchQuery: string; referenceDiagramDescription?: string }[]
     : [];
 
   function toBullets(text: string): string[] {
@@ -213,7 +216,7 @@ export default function Home() {
             search: leftImgs[2].suggestedSearchQuery,
             draw: leftImgs[2].referenceDiagramDescription,
           },
-        ].filter(Boolean) as any
+        ].filter(Boolean) as { afterSection: string; title: string; caption: string; search: string; draw?: string }[]
       : [];
 
   return (
@@ -223,7 +226,7 @@ export default function Home() {
           <CardTitle>Practical & Experiment Generator</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Tabs value={mode} onValueChange={(v) => setMode(v as any)}>
+          <Tabs value={mode} onValueChange={(v) => setMode(v as "practical" | "experiment")}>
             <TabsList>
               <TabsTrigger value="practical">Practical</TabsTrigger>
               <TabsTrigger value="experiment">Experiment</TabsTrigger>

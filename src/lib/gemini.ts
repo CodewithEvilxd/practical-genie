@@ -103,15 +103,15 @@ Constraints:
 Mode: ${params.mode}
 Question: ${params.question}`;
 
-  let lastErr: any = null;
+  let lastErr: unknown = null;
   for (const modelName of candidateModels) {
     try {
       const text = await generateViaRestV1(modelName, prompt);
       return parseGeneratedPlan(text);
-    } catch (err: any) {
+    } catch (err: unknown) {
       lastErr = err;
       // On 404/unsupported, continue to next model
-      const msg = String(err?.message || "");
+      const msg = String((err instanceof Error ? err.message : err) || "");
       if (msg.includes("404") || msg.includes("not found") || msg.includes("unsupported") || msg.includes("model")) {
         continue;
       }
@@ -144,7 +144,7 @@ async function generateViaRestV1(model: string, prompt: string): Promise<string>
   const data = await res.json();
   const parts = data?.candidates?.[0]?.content?.parts;
   const text = Array.isArray(parts)
-    ? parts.map((p: any) => p?.text).filter(Boolean).join("\n")
+    ? parts.map((p: { text?: string }) => p?.text).filter(Boolean).join("\n")
     : "";
   if (!text) throw new Error("Empty response from REST v1");
   return text;
@@ -152,13 +152,14 @@ async function generateViaRestV1(model: string, prompt: string): Promise<string>
 
 async function discoverModelId(): Promise<string | null> {
   const { GEMINI_API_KEY } = getServerEnv();
+  type ModelInfo = { name?: string; supportedGenerationMethods?: string[] };
   // Prefer v1 list
   try {
     const url = `https://generativelanguage.googleapis.com/v1/models?key=${encodeURIComponent(GEMINI_API_KEY)}`;
     const res = await fetch(url);
     if (res.ok) {
       const data = await res.json();
-      const models: any[] = data?.models || [];
+      const models = (data?.models || []) as ModelInfo[];
       const supported = models.filter((m) => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes("generateContent"));
       const preferredOrder = ["flash", "pro"]; // prefer flash, then pro
       const pick = supported
@@ -176,7 +177,7 @@ async function discoverModelId(): Promise<string | null> {
     const res = await fetch(url);
     if (res.ok) {
       const data = await res.json();
-      const models: any[] = data?.models || [];
+      const models = (data?.models || []) as ModelInfo[];
       const supported = models.filter((m) => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes("generateContent"));
       const preferredOrder = ["flash", "pro"];
       const pick = supported

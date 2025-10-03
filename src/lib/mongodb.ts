@@ -20,9 +20,7 @@ export function getMongoClient(uri?: string): MongoClient {
 
 export async function getMongoDb(dbName?: string) {
   const client = getMongoClient();
-  if (!client.topology?.isConnected()) {
-    await client.connect();
-  }
+  await client.connect();
   const name = dbName || process.env.MONGODB_DB || "practical-genie";
   return client.db(name);
 }

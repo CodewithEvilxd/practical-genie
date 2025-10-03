@@ -13,9 +13,10 @@ export async function POST(req: NextRequest) {
     const { mode, question } = bodySchema.parse(json);
     const plan = await generatePlanFromGemini({ mode: mode as GenerateMode, question });
     return NextResponse.json({ ok: true, plan });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("/api/generate error", error);
-    return NextResponse.json({ ok: false, error: error?.message || "Unknown error" }, { status: 400 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ ok: false, error: message }, { status: 400 });
   }
 }
 

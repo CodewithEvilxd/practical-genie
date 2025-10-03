@@ -17,18 +17,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ ok: false, error: `wiki status ${sr.status}` }, { status: 500 });
     }
     const data = await sr.json();
-    const pages = data?.query?.pages ? Object.values<any>(data.query.pages) : [];
+    const pages = data?.query?.pages ? Object.values(data.query.pages) as unknown[] : [];
     let imageUrl: string | null = null;
     if (pages.length > 0) {
-      const p = pages[0] as any;
+      const p = pages[0] as { original?: { source?: string } };
       imageUrl = p?.original?.source || null;
     }
     if (!imageUrl) {
       return NextResponse.json({ ok: false, error: "No image found" }, { status: 404 });
     }
     return NextResponse.json({ ok: true, imageUrl });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: e?.message || "error" }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "error";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }
 
