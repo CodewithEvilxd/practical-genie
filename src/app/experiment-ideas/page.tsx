@@ -672,180 +672,363 @@ export default function ExperimentIdeas() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Experiment Ideas</CardTitle>
+              <CardTitle>Complete Experiment Report</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="flex items-start justify-between gap-2">
-                <h2 className="text-xl font-semibold">{plan.title}</h2>
-                <Badge variant="secondary">Ideas</Badge>
+                <h2 className="text-2xl font-bold text-blue-800">{plan.title}</h2>
+                <Badge variant="secondary" className="bg-green-100 text-green-800">Complete Guide</Badge>
               </div>
               <Separator />
 
-              {plan.writingInstructions && (
-                <section>
-                  <h3 className="font-medium">How to Write the Experiment Report</h3>
-                  <p className="text-sm text-muted-foreground">{plan.writingInstructions}</p>
-                </section>
-              )}
+              {/* What to Make Section */}
+              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                <h3 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                  🎨 What to Make (Diagrams & Images)
+                  <Badge className="bg-blue-200 text-blue-800 text-xs">Chart Paper: 72x56 cm</Badge>
+                </h3>
+                <div className="space-y-4">
+                  {/* Theory Content for Chart Paper - Exact Format */}
+                  <div className="bg-white p-4 rounded border-2 border-blue-300">
+                    <h4 className="font-bold text-blue-900 mb-3 flex items-center gap-2 text-center">
+                      📝 EXACT FORMAT TO WRITE ON CHART PAPER
+                      <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">COPY THIS PATTERN</span>
+                    </h4>
 
-              {plan.contentGuidelines && plan.contentGuidelines.length > 0 && (
-                <section>
-                  <h3 className="font-medium">What to Include in Your Report</h3>
-                  <ul className="list-disc pl-5">
-                    {plan.contentGuidelines.map((guideline, i) => (
-                      <li key={i}>{guideline}</li>
+                    {/* Exact Lines Format */}
+                    <div className="bg-gray-50 p-3 rounded font-mono text-sm border border-gray-300">
+                      <div className="space-y-2">
+                        <div className="text-center font-bold text-lg border-b-2 border-blue-400 pb-1 mb-3">
+                          [EXPERIMENT TITLE]
+                        </div>
+
+                        <div className="space-y-1">
+                          <div className="font-bold text-blue-800">OBJECT:</div>
+                          <div className="ml-4 text-gray-700">• [Write the main objective/aim here]</div>
+                          <div className="ml-4 text-gray-700">• [State what you want to achieve]</div>
+                        </div>
+
+                        <div className="space-y-1 mt-3">
+                          <div className="font-bold text-green-800">COMPONENT:</div>
+                          <div className="ml-4 text-gray-700">• [List all materials/apparatus needed]</div>
+                          <div className="ml-4 text-gray-700">• [Include quantities and specifications]</div>
+                          <div className="ml-4 text-gray-700">• [Mention any special equipment]</div>
+                        </div>
+
+                        <div className="space-y-1 mt-3">
+                          <div className="font-bold text-purple-800">REQ:</div>
+                          <div className="ml-4 text-gray-700">• [State the requirements/conditions]</div>
+                          <div className="ml-4 text-gray-700">• [List any prerequisites needed]</div>
+                          <div className="ml-4 text-gray-700">• [Mention safety requirements]</div>
+                        </div>
+
+                        <div className="space-y-1 mt-3">
+                          <div className="font-bold text-orange-800">THEORY:</div>
+                          <div className="ml-4 text-gray-700">• [Write complete theory here]</div>
+                          <div className="ml-4 text-gray-700">• [Include all relevant formulae]</div>
+                          <div className="ml-4 text-gray-700">• [State assumptions and conditions]</div>
+                          <div className="ml-4 text-gray-700">• [Explain basic concepts]</div>
+                        </div>
+
+                        <div className="space-y-1 mt-3">
+                          <div className="font-bold text-red-800">PROCEDURE:</div>
+                          <div className="ml-4 text-gray-700">• [Step-by-step instructions]</div>
+                          <div className="ml-4 text-gray-700">• [Safety precautions]</div>
+                          <div className="ml-4 text-gray-700">• [Measurement techniques]</div>
+                        </div>
+
+                        <div className="space-y-1 mt-3">
+                          <div className="font-bold text-indigo-800">CONCLUSION:</div>
+                          <div className="ml-4 text-gray-700">• [Summarize key findings]</div>
+                          <div className="ml-4 text-gray-700">• [State whether aims were achieved]</div>
+                          <div className="ml-4 text-gray-700">• [Mention practical applications]</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 p-2 bg-blue-100 rounded text-sm">
+                      <strong>📏 Chart Paper Layout (72x56 cm):</strong><br/>
+                      • <strong>Left Side:</strong> Write above content in large, clear letters<br/>
+                      • <strong>Right Side:</strong> Draw circuit diagrams and images<br/>
+                      • <strong>Bottom:</strong> Leave space for conclusion and signatures<br/>
+                      • Use black marker, maintain proper spacing between sections
+                    </div>
+                  </div>
+
+                  {plan.diagramIdeas && plan.diagramIdeas.length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-blue-700 mb-1">📐 Diagrams to Draw:</h4>
+                      <ul className="list-disc pl-5 text-sm text-blue-600">
+                        {plan.diagramIdeas.map((idea, i) => (
+                          <li key={i}>{idea}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {leftImgs.length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-blue-700 mb-1">🖼️ Suggested Images:</h4>
+                      <ul className="list-disc pl-5 text-sm text-blue-600">
+                        {leftImgs.map((img, i) => (
+                          <li key={i}>
+                            <span className="font-medium">{img.title}:</span> {img.caption}
+                            {img.suggestedSearchQuery && (
+                              <span className="text-blue-500"> (Search: {img.suggestedSearchQuery})</span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {plan.showcaseIdeas && plan.showcaseIdeas.length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-blue-700 mb-1">🎪 Visual Demonstrations:</h4>
+                      <ul className="list-disc pl-5 text-sm text-blue-600">
+                        {plan.showcaseIdeas.map((idea, i) => (
+                          <li key={i}>{idea}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Experiment Report Structure */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">📝 What to Write (Complete Report)</h3>
+
+                {/* 1. Title & Aim */}
+                <section className="bg-white border rounded-lg p-4">
+                  <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                    1️⃣ 📋 Title & Aim
+                  </h4>
+                  {plan.objectives && plan.objectives.length > 0 && (
+                    <div className="mb-3">
+                      <p className="text-sm font-medium text-gray-700 mb-1">Objectives:</p>
+                      <ul className="list-disc pl-5 text-sm text-gray-600">
+                        {plan.objectives.map((o, i) => (
+                          <li key={i}>{o}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div className="text-sm text-gray-600 italic">
+                    Write a clear title and state your main aim in one sentence
+                  </div>
+                </section>
+
+                {/* 2. Theory - Prominently Displayed */}
+                {plan.theory && (
+                  <section className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-yellow-800 mb-3 flex items-center gap-2 text-lg">
+                      2️⃣ 🧪 Theory & Background
+                      <Badge className="bg-yellow-200 text-yellow-800 text-xs">IMPORTANT</Badge>
+                    </h4>
+                    <div className="bg-white p-3 rounded border text-sm">
+                      {plan.theory}
+                    </div>
+                    <div className="mt-2 text-xs text-yellow-700 italic">
+                      Include all relevant formulae with proper derivation and state assumptions
+                    </div>
+                  </section>
+                )}
+
+                {/* 3. Materials & Apparatus */}
+                <section className="bg-white border rounded-lg p-4">
+                  <h4 className="font-semibold text-purple-800 mb-2 flex items-center gap-2">
+                    3️⃣ 🛠️ Materials & Apparatus
+                  </h4>
+                  <ul className="list-disc pl-5 text-sm text-gray-600">
+                    {plan.materials.map((m, i) => (
+                      <li key={i}>{m}</li>
                     ))}
                   </ul>
+                  <div className="mt-2 text-xs text-gray-600 italic">
+                    List all equipment with specifications and quantities
+                  </div>
                 </section>
-              )}
 
-              {plan.implementationIdeas && plan.implementationIdeas.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Implementation Ideas</h3>
-                  <ul className="list-disc pl-5">
-                    {plan.implementationIdeas.map((idea, i) => (
-                      <li key={i}>{idea}</li>
+                {/* 4. Procedure */}
+                <section className="bg-white border rounded-lg p-4">
+                  <h4 className="font-semibold text-orange-800 mb-2 flex items-center gap-2">
+                    4️⃣ 📋 Procedure Steps
+                  </h4>
+                  <ol className="list-decimal pl-5 space-y-1 text-sm text-gray-600">
+                    {plan.procedure.map((step, i) => (
+                      <li key={i}>{step}</li>
                     ))}
-                  </ul>
+                  </ol>
+                  <div className="mt-2 text-xs text-gray-600 italic">
+                    Write step-by-step instructions anyone can follow
+                  </div>
                 </section>
+
+                {/* 5. Observations & Data */}
+                <section className="bg-white border rounded-lg p-4">
+                  <h4 className="font-semibold text-red-800 mb-2 flex items-center gap-2">
+                    5️⃣ 📊 Observations & Data
+                  </h4>
+                  {plan.tables && plan.tables.length > 0 && (
+                    <div className="mb-3">
+                      <p className="text-sm font-medium text-gray-700 mb-2">Data Tables:</p>
+                      <div className="space-y-3">
+                        {plan.tables.map((tbl, idx) => (
+                          <div key={idx} className="border rounded-md overflow-x-auto">
+                            <div className="p-2 font-medium border-b bg-gray-50 text-sm">{tbl.title}</div>
+                            <table className="w-full text-xs">
+                              <thead>
+                                <tr className="bg-gray-100">
+                                  {tbl.headers.map((h, i) => (
+                                    <th key={i} className="text-left p-2 border-b">{h}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {tbl.rows.map((r, i) => (
+                                  <tr key={i} className="odd:bg-gray-50">
+                                    {r.map((c, j) => (
+                                      <td key={j} className="p-2 border-b align-top">{c}</td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="text-xs text-gray-600 italic">
+                    Record all measurements with units, take multiple readings
+                  </div>
+                </section>
+
+                {/* 6. Calculations & Results */}
+                <section className="bg-white border rounded-lg p-4">
+                  <h4 className="font-semibold text-indigo-800 mb-2 flex items-center gap-2">
+                    6️⃣ 📈 Calculations & Results
+                  </h4>
+                  <div className="text-xs text-gray-600 italic">
+                    Show all calculation steps with formulae, plot graphs, compare with theory
+                  </div>
+                </section>
+
+                {/* 7. Discussion & Analysis */}
+                <section className="bg-white border rounded-lg p-4">
+                  <h4 className="font-semibold text-pink-800 mb-2 flex items-center gap-2">
+                    7️⃣ 💭 Discussion & Analysis
+                  </h4>
+                  <div className="text-xs text-gray-600 italic">
+                    Analyze errors, explain discrepancies, suggest improvements
+                  </div>
+                </section>
+
+                {/* 8. Conclusion */}
+                <section className="bg-white border rounded-lg p-4">
+                  <h4 className="font-semibold text-teal-800 mb-2 flex items-center gap-2">
+                    8️⃣ ✅ Conclusion
+                  </h4>
+                  <div className="text-xs text-gray-600 italic">
+                    Summarize findings and whether aims were achieved
+                  </div>
+                </section>
+              </div>
+
+              {/* Implementation & Presentation Ideas */}
+              {(plan.implementationIdeas || plan.presentationIdeas || plan.presentationTips) && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">💡 How to Do & Present Your Experiment</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {plan.implementationIdeas && plan.implementationIdeas.length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-2">🔧 Implementation Ideas:</h4>
+                        <ul className="list-disc pl-5 text-sm text-gray-600">
+                          {plan.implementationIdeas.map((idea, i) => (
+                            <li key={i}>{idea}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {plan.presentationIdeas && plan.presentationIdeas.length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-2">📊 Presentation Ideas:</h4>
+                        <ul className="list-disc pl-5 text-sm text-gray-600">
+                          {plan.presentationIdeas.map((idea, i) => (
+                            <li key={i}>{idea}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {plan.presentationTips && plan.presentationTips.length > 0 && (
+                    <div className="mt-3">
+                      <h4 className="font-medium text-gray-700 mb-2">💬 Presentation Tips:</h4>
+                      <ul className="list-disc pl-5 text-sm text-gray-600">
+                        {plan.presentationTips.map((t, i) => (
+                          <li key={i}>{t}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               )}
 
-              {plan.presentationIdeas && plan.presentationIdeas.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Presentation Ideas</h3>
-                  <ul className="list-disc pl-5">
-                    {plan.presentationIdeas.map((idea, i) => (
-                      <li key={i}>{idea}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-
-              {plan.showcaseIdeas && plan.showcaseIdeas.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Showcase Ideas</h3>
-                  <ul className="list-disc pl-5">
-                    {plan.showcaseIdeas.map((idea, i) => (
-                      <li key={i}>{idea}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-
-              {plan.diagramIdeas && plan.diagramIdeas.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Diagram Ideas</h3>
-                  <ul className="list-disc pl-5">
-                    {plan.diagramIdeas.map((idea, i) => (
-                      <li key={i}>{idea}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-
+              {/* Improvement Suggestions */}
               {plan.improvementSuggestions && plan.improvementSuggestions.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Improvement Suggestions</h3>
-                  <ul className="list-disc pl-5">
+                <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
+                  <h3 className="text-lg font-semibold text-green-800 mb-2">🚀 Improvement Suggestions</h3>
+                  <ul className="list-disc pl-5 text-sm text-green-700">
                     {plan.improvementSuggestions.map((suggestion, i) => (
                       <li key={i}>{suggestion}</li>
                     ))}
                   </ul>
-                </section>
+                </div>
               )}
 
-              {plan.objectives && plan.objectives.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Objectives</h3>
-                  <ul className="list-disc pl-5">
-                    {plan.objectives.map((o, i) => (
-                      <li key={i}>{o}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-
-              <section>
-                <h3 className="font-medium">Materials</h3>
-                <ul className="list-disc pl-5">
-                  {plan.materials.map((m, i) => (
-                    <li key={i}>{m}</li>
-                  ))}
-                </ul>
-              </section>
-
-              {plan.theory && (
-                <section>
-                  <h3 className="font-medium">Theory</h3>
-                  <p>{plan.theory}</p>
-                </section>
-              )}
-
-              <section>
-                <h3 className="font-medium">Procedure</h3>
-                <ol className="list-decimal pl-5 space-y-1">
-                  {plan.procedure.map((step, i) => (
-                    <li key={i}>{step}</li>
-                  ))}
-                </ol>
-              </section>
-
-              {plan.presentationTips && plan.presentationTips.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Presentation Tips</h3>
-                  <ul className="list-disc pl-5">
-                    {plan.presentationTips.map((t, i) => (
-                      <li key={i}>{t}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-
+              {/* Viva Questions & Answers - At the Bottom */}
               {plan.vivaQuestions && plan.vivaQuestions.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Viva Questions & Answers</h3>
+                <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                  <h3 className="text-lg font-semibold text-red-800 mb-3 flex items-center gap-2">
+                    ❓ Viva Questions & Answers
+                    <Badge className="bg-red-200 text-red-800 text-xs">Practice These</Badge>
+                  </h3>
                   <div className="space-y-3">
                     {plan.vivaQuestions.map((q, i) => (
-                      <div key={i} className="border rounded-md p-3">
-                        <div className="font-medium text-sm mb-1">Q{i + 1}: {q}</div>
+                      <div key={i} className="border rounded-md p-3 bg-white">
+                        <div className="font-medium text-sm mb-2 text-red-800">Q{i + 1}: {q}</div>
                         {plan.vivaAnswers && plan.vivaAnswers[i] && (
-                          <div className="text-sm text-muted-foreground">A: {plan.vivaAnswers[i]}</div>
+                          <div className="text-sm text-gray-700 bg-gray-50 p-2 rounded">
+                            <strong>A:</strong> {plan.vivaAnswers[i]}
+                          </div>
                         )}
                       </div>
                     ))}
                   </div>
-                </section>
+                </div>
               )}
 
-              {plan.tables && plan.tables.length > 0 && (
-                <section>
-                  <h3 className="font-medium">Tables</h3>
-                  <div className="space-y-4">
-                    {plan.tables.map((tbl, idx) => (
-                      <div key={idx} className="border rounded-md overflow-x-auto">
-                        <div className="p-2 font-medium border-b">{tbl.title}</div>
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="bg-muted/40">
-                              {tbl.headers.map((h, i) => (
-                                <th key={i} className="text-left p-2 border-b">{h}</th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {tbl.rows.map((r, i) => (
-                              <tr key={i} className="odd:bg-muted/10">
-                                {r.map((c, j) => (
-                                  <td key={j} className="p-2 border-b align-top">{c}</td>
-                                ))}
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+              {/* Writing Instructions */}
+              {plan.writingInstructions && (
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h3 className="font-semibold text-blue-800 mb-2">📝 Writing Instructions</h3>
+                  <p className="text-sm text-blue-700">{plan.writingInstructions}</p>
+                </div>
+              )}
+
+              {/* Content Guidelines */}
+              {plan.contentGuidelines && plan.contentGuidelines.length > 0 && (
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                  <h3 className="font-semibold text-purple-800 mb-2">📋 What to Include</h3>
+                  <ul className="list-disc pl-5 text-sm text-purple-700">
+                    {plan.contentGuidelines.map((guideline, i) => (
+                      <li key={i}>{guideline}</li>
                     ))}
-                  </div>
-                </section>
+                  </ul>
+                </div>
               )}
             </CardContent>
           </Card>
