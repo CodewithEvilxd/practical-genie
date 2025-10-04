@@ -10,23 +10,23 @@ export function getGeminiClient(): GoogleGenerativeAI {
   return singletonClient;
 }
 
-export type GenerateMode = "practical" | "experiment";
+export type GenerateMode = "practical" | "experiment" | "experiment-ideas";
 
 export interface GeneratedPlan {
   title: string;
-  objectives: string[];
+  objectives?: string[];
   materials: string[];
-  theory: string;
+  theory?: string;
   procedure: string[];
   observations?: string[];
   results?: string[];
   safetyNotes?: string[];
-  presentationTips?: string[];
-  vivaQuestions?: string[];
-  vivaAnswers?: string[];
+  presentationTips: string[];
+  vivaQuestions: string[];
+  vivaAnswers: string[];
   diagramImageUrls?: string[];
   suggestedImageSearchQueries?: string[];
-  notebookLayout: {
+  notebookLayout?: {
     leftPane: "diagram" | "blank";
     rightPane: Array<{
       heading: string;
@@ -45,6 +45,13 @@ export interface GeneratedPlan {
     headers: string[];
     rows: string[][];
   }>;
+  implementationIdeas: string[];
+  presentationIdeas: string[];
+  showcaseIdeas: string[];
+  diagramIdeas: string[];
+  improvementSuggestions: string[];
+  writingInstructions: string;
+  contentGuidelines: string[];
 }
 
 export async function generatePlanFromGemini(params: {
@@ -63,30 +70,57 @@ export async function generatePlanFromGemini(params: {
         "gemini-1.5-flash-8b",
       ];
 
-  const prompt = `You are an expert lab instructor creating a student-ready practical/experiment notebook plan.
-Write in very simple, short sentences that a school/college student can copy into a practical notebook.
-Return STRICT JSON only. Do NOT output markdown or code fences. Only pure JSON. Schema:
+  let prompt: string;
+  if (params.mode === "experiment-ideas") {
+    prompt = `You are an expert teacher helping students with comprehensive experiment ideas, writing guidance, and diagrams.
+For this experiment: "${params.question}"
+
+Return ONLY a JSON object:
 {
-  "title": string,
-  "objectives": string[],
-  "materials": string[],
-  "theory": string,
-  "procedure": string[],
-  "observations": string[],
-  "results": string[],
-  "safetyNotes": string[],
-  "presentationTips": string[],
-   "vivaQuestions": string[],
-   "vivaAnswers": string[],
-   "diagramImageUrls": string[],
-   "suggestedImageSearchQueries": string[],
-   "notebookLayout": {
-     "leftPane": "diagram" | "blank",
-     "rightPane": Array<{"heading": string, "content": string}>
-   },
-   "leftPaneImages": Array<{"title": string, "caption": string, "suggestedSearchQuery": string, "referenceDiagramDescription"?: string}> ,
-   "writingStyleNotes": string[]
-   "tables": Array<{"title": string, "headers": string[], "rows": string[][]}>
+ "title": "Experiment Title",
+ "writingInstructions": "How to write the experiment report",
+ "contentGuidelines": ["5-6 key things to include"],
+ "implementationIdeas": ["5 creative implementation ideas"],
+ "presentationIdeas": ["4 presentation methods"],
+ "showcaseIdeas": ["4 showcase techniques"],
+ "diagramIdeas": ["5 diagram suggestions"],
+ "improvementSuggestions": ["3 enhancement ideas"],
+ "materials": ["required materials"],
+ "procedure": ["step-by-step procedure"],
+ "presentationTips": ["3 presentation tips"],
+ "vivaQuestions": ["15-20 detailed viva questions"],
+ "vivaAnswers": ["corresponding answers"],
+ "diagramImageUrls": [],
+ "suggestedImageSearchQueries": ["3 search queries"],
+ "leftPaneImages": [{"title": "title", "caption": "caption", "suggestedSearchQuery": "query", "referenceDiagramDescription": "description"}]
+}
+
+Provide detailed, student-friendly content. Return ONLY the JSON.`;
+  } else {
+    prompt = `You are an expert lab instructor creating a student-ready practical/experiment notebook plan.
+Write in very simple, short sentences that a school/college student can copy into a practical notebook.
+Return ONLY valid JSON. Do NOT include any text before or after the JSON. Do NOT use markdown code blocks. Schema:
+{
+ "title": string,
+ "objectives": string[],
+ "materials": string[],
+ "theory": string,
+ "procedure": string[],
+ "observations": string[],
+ "results": string[],
+ "safetyNotes": string[],
+ "presentationTips": string[],
+  "vivaQuestions": string[],
+  "vivaAnswers": string[],
+  "diagramImageUrls": string[],
+  "suggestedImageSearchQueries": string[],
+  "notebookLayout": {
+    "leftPane": "diagram" | "blank",
+    "rightPane": Array<{"heading": string, "content": string}>
+  },
+  "leftPaneImages": Array<{"title": string, "caption": string, "suggestedSearchQuery": string, "referenceDiagramDescription"?: string}> ,
+  "writingStyleNotes": string[]
+  "tables": Array<{"title": string, "headers": string[], "rows": string[][]}>
 }
 
 Constraints:
@@ -102,6 +136,7 @@ Constraints:
 
 Mode: ${params.mode}
 Question: ${params.question}`;
+  }
 
   let lastErr: unknown = null;
   for (const modelName of candidateModels) {
@@ -198,7 +233,11 @@ function parseGeneratedPlan(text: string): GeneratedPlan {
   t = t.replace(/^```(json)?/i, "").replace(/```$/i, "").trim();
   // Remove leading markdown/table lines like "- |" or pipes starting lines
   const lines = t.split(/\r?\n/).filter((ln) => !/^\s*\|/.test(ln) && !/^\s*-\s*\|/.test(ln));
-  const cleaned = lines.join("\n");
+  let cleaned = lines.join("\n");
+
+  // Remove control characters that are invalid in JSON strings
+  cleaned = cleaned.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+
   // Try direct parse
   try {
     return JSON.parse(cleaned) as GeneratedPlan;
@@ -206,8 +245,55 @@ function parseGeneratedPlan(text: string): GeneratedPlan {
   // Try to find the largest JSON object substring
   const match = cleaned.match(/\{[\s\S]*\}/);
   if (match) {
-    return JSON.parse(match[0]) as GeneratedPlan;
+    try {
+      return JSON.parse(match[0]) as GeneratedPlan;
+    } catch {}
   }
+  // Try to extract valid JSON by finding the end of the JSON object
+  // Look for the last complete JSON object in the text
+  let braceCount = 0;
+  let inString = false;
+  let escapeNext = false;
+  let jsonEndIndex = -1;
+
+  for (let i = 0; i < cleaned.length; i++) {
+    const char = cleaned[i];
+
+    if (escapeNext) {
+      escapeNext = false;
+      continue;
+    }
+
+    if (char === '\\') {
+      escapeNext = true;
+      continue;
+    }
+
+    if (char === '"' && !escapeNext) {
+      inString = !inString;
+      continue;
+    }
+
+    if (!inString) {
+      if (char === '{') {
+        braceCount++;
+      } else if (char === '}') {
+        braceCount--;
+        if (braceCount === 0) {
+          jsonEndIndex = i;
+          break;
+        }
+      }
+    }
+  }
+
+  if (jsonEndIndex > 0) {
+    const jsonSubstring = cleaned.substring(0, jsonEndIndex + 1);
+    try {
+      return JSON.parse(jsonSubstring) as GeneratedPlan;
+    } catch {}
+  }
+
   throw new Error("Failed to parse model response as JSON");
 }
 

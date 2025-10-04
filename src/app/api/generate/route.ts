@@ -3,7 +3,7 @@ import { z } from "zod";
 import { generatePlanFromGemini, type GenerateMode } from "@/lib/gemini";
 
 const bodySchema = z.object({
-  mode: z.enum(["practical", "experiment"]).default("practical"),
+  mode: z.enum(["practical", "experiment", "experiment-ideas"]).default("practical"),
   question: z.string().min(5),
 });
 

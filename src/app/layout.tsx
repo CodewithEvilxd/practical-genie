@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
 import { ModeToggle } from "../components/mode-toggle";
@@ -31,7 +32,13 @@ export default function RootLayout({
           <div className="min-h-dvh flex flex-col">
             <header className="border-b">
               <div className="container mx-auto p-4 flex items-center justify-between">
-                <div className="font-semibold">Practical Genie</div>
+                <div className="flex items-center gap-4">
+                  <Link href="/" className="font-semibold">Practical Genie</Link>
+                  <nav className="flex gap-4">
+                    <Link href="/" className="text-sm hover:underline">Practical Generator</Link>
+                    <Link href="/experiment-ideas" className="text-sm hover:underline">Experiment Ideas</Link>
+                  </nav>
+                </div>
                 <ModeToggle />
               </div>
             </header>
