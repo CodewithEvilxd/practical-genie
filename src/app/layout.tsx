@@ -4,6 +4,7 @@ import Link from "next/link";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
 import { ModeToggle } from "../components/mode-toggle";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default function RootLayout({
             <div className="flex-1">{children}</div>
           </div>
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
