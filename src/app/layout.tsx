@@ -38,6 +38,7 @@ export default function RootLayout({
                   <nav className="flex gap-4">
                     <Link href="/" className="text-sm hover:underline">Practical Generator</Link>
                     <Link href="/experiment-ideas" className="text-sm hover:underline">Experiment Ideas</Link>
+                    <Link href="/about" className="text-sm hover:underline">About</Link>
                   </nav>
                 </div>
                 <ModeToggle />
